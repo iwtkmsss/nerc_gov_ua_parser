@@ -1,1 +1,1 @@
-from inline import *
+from .inline import *
