@@ -1,0 +1,64 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Кэш и логи
+*.log
+*.pot
+*.mo
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+*.db
+*.db-journal
+
+# Виртуальное окружение
+venv/
+env/
+.venv/
+.env/
+
+# Конфигурация среды
+*.env
+*.env.*
+.envrc
+.venv.bak/
+
+# Пакеты и сборки
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit тесты / coverage
+.coverage
+.coverage.*
+.cache
+pytest_cache/
+htmlcov/
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# --- Aiogram / Telegram ---
+# Логи бота
+logs/
+bot.log
+
+# Файлы, генерируемые во время работы бота (например, временные фото, документы)
+temp/
+tmp/
+downloads/
