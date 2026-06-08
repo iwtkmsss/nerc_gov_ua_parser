@@ -23,6 +23,7 @@ env/
 # Конфигурация среды
 *.env
 *.env.*
+!.env.example
 .envrc
 .venv.bak/
 
