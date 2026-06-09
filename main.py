@@ -2,6 +2,7 @@ import sys
 import logging
 import asyncio
 import os
+from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
 from aiogram import Bot, Dispatcher
@@ -16,6 +17,8 @@ from misc.util import format_changes_message
 
 
 CHECK_INTERVAL_SECONDS = int(os.getenv("CHECK_INTERVAL_SECONDS", "3600"))
+MONITORING_START_HOUR = int(os.getenv("MONITORING_START_HOUR", "9"))
+MONITORING_END_HOUR = int(os.getenv("MONITORING_END_HOUR", "18"))
 MESSAGE_SAFE_LIMIT = 3900
 
 
@@ -64,6 +67,17 @@ def split_message(text, limit=MESSAGE_SAFE_LIMIT):
     return chunks
 
 
+def is_monitoring_time(now=None):
+    now = now or datetime.now()
+    if MONITORING_START_HOUR == MONITORING_END_HOUR:
+        return True
+
+    if MONITORING_START_HOUR < MONITORING_END_HOUR:
+        return MONITORING_START_HOUR <= now.hour < MONITORING_END_HOUR
+
+    return now.hour >= MONITORING_START_HOUR or now.hour < MONITORING_END_HOUR
+
+
 async def send_changes(bot, users, changes):
     if not changes:
         return
@@ -87,6 +101,15 @@ async def monitoring_loop(bot):
     await asyncio.sleep(5)
     while True:
         try:
+            if not is_monitoring_time():
+                logging.info(
+                    "Monitoring skipped: outside active hours %s:00-%s:00",
+                    MONITORING_START_HOUR,
+                    MONITORING_END_HOUR
+                )
+                await asyncio.sleep(CHECK_INTERVAL_SECONDS)
+                continue
+
             users = BDB.get_subscribed_users()
             if not users:
                 logging.info("Monitoring skipped: no subscribers")
