@@ -63,3 +63,5 @@ bot.log
 temp/
 tmp/
 downloads/
+
+*.sqlite
