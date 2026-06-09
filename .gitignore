@@ -64,4 +64,4 @@ temp/
 tmp/
 downloads/
 
-*.sqlite
+db.sqlite
