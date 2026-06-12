@@ -1,3 +1,10 @@
+IMPORTANT_CHANGE_URLS = {
+    "https://www.nerc.gov.ua/derzhavnij-kontrol/normativni-akti-dotrimannya-yakih-pereviryayetsya/u-sferi-teplopostachannya": (
+        "сторінка нормативних актів, дотримання яких перевіряється у сфері теплопостачання"
+    )
+}
+
+
 def format_monitoring_log(user, log):
     subscribed_at = user.get("subscribed_at") or "немає даних"
     last_checked_at = log.get("last_checked_at") or "ще не перевірялось"
@@ -14,8 +21,20 @@ def format_monitoring_log(user, log):
 
 
 def format_changes_message(changes):
-    links = "\n".join(f"{index}. {url}" for index, url in enumerate(changes, start=1))
-    return (
-        "Знайдено зміни на сайті НКРЕКП.\n\n"
-        f"{links}"
-    )
+    important_changes = [url for url in changes if url in IMPORTANT_CHANGE_URLS]
+    regular_changes = [url for url in changes if url not in IMPORTANT_CHANGE_URLS]
+    parts = ["Знайдено зміни на сайті НКРЕКП."]
+
+    if important_changes:
+        important_links = "\n".join(
+            f"{index}. {IMPORTANT_CHANGE_URLS[url]}:\n{url}"
+            for index, url in enumerate(important_changes, start=1)
+        )
+        parts.append(f"<b>ВАЖЛИВО</b>\n{important_links}")
+
+    if regular_changes:
+        title = "Інші зміни:" if important_changes else "Змінені сторінки:"
+        links = "\n".join(f"{index}. {url}" for index, url in enumerate(regular_changes, start=1))
+        parts.append(f"{title}\n{links}")
+
+    return "\n\n".join(parts)
